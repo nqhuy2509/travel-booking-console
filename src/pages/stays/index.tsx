@@ -44,7 +44,6 @@ import { useNavigate } from 'react-router';
 import {
     deleteStayByIdAPI,
     downloadFileProductsAPI,
-    getAllProvincesAPI,
     getAllStaysAPI,
     uploadFileProductsAPI
 } from '../../api/stay.api';

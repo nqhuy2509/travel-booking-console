@@ -1,7 +1,5 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import { refreshTokenAPI } from '../api/auth.api';
-import { IResponseAPI } from '../types/responseAPI.type';
-import { getToken, getUserId, setToken } from '../utils/auth';
+import { getToken } from '../utils/auth';
 
 const api: AxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_URL as string,
@@ -20,11 +18,6 @@ api.interceptors.request.use(
         Promise.reject(error);
     }
 );
-
-type IRefreshAPI = {
-    accessToken: string;
-    refreshToken: string;
-};
 
 api.interceptors.response.use(
     (response) => {

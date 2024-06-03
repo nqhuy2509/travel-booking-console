@@ -400,10 +400,7 @@ const AddStay = () => {
                                                             }
                                                         />
                                                     )}
-                                                    onChange={(
-                                                        event,
-                                                        value
-                                                    ) => {
+                                                    onChange={(_, value) => {
                                                         if (value) {
                                                             setSelectProvinceId(
                                                                 value?.id.toString()
@@ -445,10 +442,7 @@ const AddStay = () => {
                                                             label='Quận/Huyện/Thị xã'
                                                         />
                                                     )}
-                                                    onChange={(
-                                                        event,
-                                                        value
-                                                    ) => {
+                                                    onChange={(_, value) => {
                                                         if (value) {
                                                             setSelectDistrict(
                                                                 value?.value

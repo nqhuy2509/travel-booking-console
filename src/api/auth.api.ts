@@ -35,7 +35,3 @@ export const loginAPI = async (data: {
 export const logoutAPI = (userId: number) => {
     return request.post(`/auth/logout?userId=${userId}`);
 };
-
-export const refreshTokenAPI = (userId: string, refreshToken: string) => {
-    return request.post('/auth/refresh', { userId, refreshToken });
-};

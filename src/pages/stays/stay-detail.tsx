@@ -34,11 +34,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import {
-    getStayByIdAPI,
-    putStayByIdAPI,
-    uploadFileProductsAPI
-} from '../../api/stay.api';
+import { getStayByIdAPI, putStayByIdAPI } from '../../api/stay.api';
 import { useDialog } from '../../hooks/useDialog';
 import { useSnackbar } from '../../hooks/useSnackbar';
 

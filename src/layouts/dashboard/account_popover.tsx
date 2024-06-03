@@ -1,5 +1,3 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { RootState } from '@/redux/store';
 import {
     Box,
@@ -9,9 +7,10 @@ import {
     Popover,
     Typography
 } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { logoutSuccess } from '../../redux/auth/auth.slice';
 import { removeToken } from '../../utils/auth';
-import { logoutStart, logoutSuccess } from '../../redux/auth/auth.slice';
-import { logoutAPI } from '../../api/auth.api';
 
 type Props = {
     anchorEl: null | HTMLElement;

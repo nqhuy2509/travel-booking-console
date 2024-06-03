@@ -1,9 +1,8 @@
-import { SvgIcon } from '@mui/material';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import InventoryIcon from '@mui/icons-material/Inventory';
+import MapsHomeWorkIcon from '@mui/icons-material/MapsHomeWork';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
-import MapsHomeWorkIcon from '@mui/icons-material/MapsHomeWork';
+import { SvgIcon } from '@mui/material';
 
 type NavItemType = {
     title: string;

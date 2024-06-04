@@ -86,7 +86,7 @@ const LoginPage: React.FC = () => {
             dispatch(loginSuccess(data));
 
             setToken(data.token);
-            setUserId(data.id);
+            setUserId(data.username);
 
             navigate('/', { replace: true });
         },

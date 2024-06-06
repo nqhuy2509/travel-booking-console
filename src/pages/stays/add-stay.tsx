@@ -144,9 +144,7 @@ const AddStay = () => {
             .required('Tên nơi lưu trú không được để trống')
             .min(3, 'Tên nơi lưu trú phải có ít nhất 4 ký tự')
             .max(50, 'Tên nơi lưu trú không được quá 50 ký tự'),
-        description: yup
-            .string()
-            .max(200, 'Mô tả nơi lưu trú không được quá 200 ký tự'),
+        description: yup.string(),
         address: yup
             .string()
             .required('Địa chỉ không được để trống')
@@ -294,7 +292,7 @@ const AddStay = () => {
                                                         <TextField
                                                             fullWidth
                                                             multiline
-                                                            rows={4}
+                                                            rows={6}
                                                             label='Mô tả khách sạn'
                                                             error={
                                                                 errors

@@ -37,6 +37,7 @@ import { useParams } from 'react-router-dom';
 import { getStayByIdAPI, putStayByIdAPI } from '../../api/stay.api';
 import { useDialog } from '../../hooks/useDialog';
 import { useSnackbar } from '../../hooks/useSnackbar';
+import { registerAPI } from '../../api/auth.api';
 
 type IEditFormInput = {
     name: string;
@@ -99,6 +100,9 @@ const ProductDetail = () => {
     const [selectType, setSelectType] = useState<string>('hotel');
     const [selectStatus, setSelectStatus] = useState<string>('available');
     const [newImage, setNewImage] = useState<File | null>(null);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
 
     const dialog = useDialog();
 
@@ -164,8 +168,6 @@ const ProductDetail = () => {
     }, []);
 
     const onEditChangeSubmit = (data: IEditFormInput) => {
-        console.log(data);
-
         const formData = new FormData();
         formData.append('name', data.name);
         formData.append('description', data.description);
@@ -198,314 +200,451 @@ const ProductDetail = () => {
         }
     });
 
-    return (
-        <Box
-            component='main'
-            sx={{
-                flexGrow: 1,
-                py: 8
-            }}
-        >
-            <Container maxWidth='xl'>
-                <Stack spacing={3}>
-                    <Stack direction='row' spacing={3} alignItems='center'>
-                        <IconButton
-                            onClick={() => {
-                                window.history.back();
-                            }}
-                        >
-                            <SvgIcon>
-                                <ArrowBackIcon />
-                            </SvgIcon>
-                        </IconButton>
-                        <Typography variant='h5'>
-                            Chi tiết nơi lưu trú
-                        </Typography>
-                    </Stack>
-                    <form
-                        onSubmit={editProductForm.handleSubmit(
-                            onEditChangeSubmit
-                        )}
-                    >
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} md={8} lg={8}>
-                                <Card
-                                    sx={{
-                                        p: 2
-                                    }}
-                                >
-                                    <CardHeader
-                                        title={stay?.name}
-                                        subheader={stay?.id}
-                                    />
+    const mutationRegisterAdmin = useMutation({
+        mutationFn: registerAPI,
+        onSuccess: () => {
+            snackbar.handleSetSnackbar(
+                'Tạo tài khoản quản lí thành công',
+                'success'
+            );
+            snackbar.handleOpen();
+            onCloseAddAdminDialog();
+        },
+        onError: () => {
+            snackbar.handleSetSnackbar('Tạo tài khoản thất bại', 'error');
+            snackbar.handleOpen();
+        }
+    });
 
-                                    <CardContent>
-                                        <Grid container spacing={3}>
-                                            <Grid item xs={12} md={6}>
-                                                <Stack>
-                                                    <Typography variant='h6'>
-                                                        Mã nơi lưu trú
-                                                    </Typography>
-                                                    <Typography>
-                                                        {stay?.id}
-                                                    </Typography>
-                                                </Stack>
-                                            </Grid>
-                                            <Grid item xs={12} md={6}>
-                                                <Controller
-                                                    name='name'
-                                                    control={
-                                                        editProductForm.control
-                                                    }
-                                                    defaultValue={stay?.name}
-                                                    render={({ field }) => (
-                                                        <TextField
-                                                            label='Tên nơi lưu trú'
-                                                            required
-                                                            fullWidth
-                                                            {...field}
-                                                        />
-                                                    )}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <Controller
-                                                    name='description'
-                                                    control={
-                                                        editProductForm.control
-                                                    }
-                                                    render={({ field }) => (
-                                                        <TextField
-                                                            label='Mô tả'
-                                                            fullWidth
-                                                            multiline
-                                                            rows={4}
-                                                            {...field}
-                                                        />
-                                                    )}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12} md={6}>
-                                                <InputLabel id='demo-select-small-label'>
-                                                    Loại khách sạn
-                                                </InputLabel>
-                                                <Select
-                                                    labelId='demo-select-small-label'
-                                                    fullWidth
-                                                    value={selectType}
-                                                    onChange={(e) =>
-                                                        setSelectType(
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                >
-                                                    {stayType.map((type) => (
-                                                        <MenuItem
-                                                            key={type.value}
-                                                            value={type.value}
-                                                        >
-                                                            {type.label}
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </Grid>
-                                            <Grid item xs={12} md={6}>
-                                                <InputLabel id='demo-select-small-label'>
-                                                    Trạng thái
-                                                </InputLabel>
-                                                <Select
-                                                    labelId='demo-select-small-label'
-                                                    fullWidth
-                                                    value={selectStatus}
-                                                    onChange={(e) =>
-                                                        setSelectType(
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                >
-                                                    {stayStatus.map((type) => (
-                                                        <MenuItem
-                                                            key={type.value}
-                                                            value={type.value}
-                                                        >
-                                                            {type.label}
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <Typography variant='h6'>
-                                                    Địa chỉ
-                                                </Typography>
-                                                <Typography>
-                                                    {stay?.location.address},{' '}
-                                                    {stay?.location.district},{' '}
-                                                    {stay?.location.province}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </CardContent>
-                                    <Divider />
-                                    <CardActions>
-                                        <Stack
-                                            justifyContent='center'
-                                            direction='column'
-                                            alignItems='center'
-                                            width='100%'
-                                        >
-                                            <Button
-                                                variant='contained'
-                                                fullWidth
-                                                type='submit'
-                                            >
-                                                Lưu lại
-                                            </Button>
-                                        </Stack>
-                                    </CardActions>
-                                </Card>
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <Card>
-                                    <CardHeader title='Ảnh nơi lưu trú' />
-                                    <CardContent>
-                                        <Box
+    const onCloseAddAdminDialog = () => {
+        setOpenDialog(false);
+        setUsername('');
+        setPassword('');
+    };
+
+    const handleAddNewAdmin = () => {
+        mutationRegisterAdmin.mutate({
+            username,
+            password,
+            stayId: id
+        });
+    };
+
+    return (
+        <>
+            <Dialog
+                open={openDialog}
+                onClose={onCloseAddAdminDialog}
+                aria-labelledby='form-dialog-title'
+            >
+                <DialogTitle>Thêm tài khoản </DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        required
+                        margin='dense'
+                        id='username'
+                        name='username'
+                        label='Tên tài khoản'
+                        type='text'
+                        fullWidth
+                        variant='standard'
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <TextField
+                        autoFocus
+                        required
+                        margin='dense'
+                        id='password'
+                        name='password'
+                        label='Mật khẩu'
+                        type='password'
+                        fullWidth
+                        variant='standard'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={onCloseAddAdminDialog}>Đóng</Button>
+                    <Button type='submit' onClick={handleAddNewAdmin}>
+                        Tạo
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Box
+                component='main'
+                sx={{
+                    flexGrow: 1,
+                    py: 8
+                }}
+            >
+                <Container maxWidth='xl'>
+                    <Stack spacing={3}>
+                        <Stack direction='row' spacing={3} alignItems='center'>
+                            <IconButton
+                                onClick={() => {
+                                    window.history.back();
+                                }}
+                            >
+                                <SvgIcon>
+                                    <ArrowBackIcon />
+                                </SvgIcon>
+                            </IconButton>
+                            <Typography variant='h5'>
+                                Chi tiết nơi lưu trú
+                            </Typography>
+                        </Stack>
+                        <form
+                            onSubmit={editProductForm.handleSubmit(
+                                onEditChangeSubmit
+                            )}
+                        >
+                            <Grid container spacing={3}>
+                                <Grid item xs={12} md={8} lg={8}>
+                                    <Stack direction='column' spacing={3}>
+                                        <Card
                                             sx={{
-                                                alignItems: 'center',
-                                                display: 'flex',
-                                                flexDirection: 'column'
+                                                p: 2
                                             }}
                                         >
-                                            <img
-                                                src={
-                                                    preview ||
-                                                    stay?.image ||
-                                                    '/images/placeholder.png'
-                                                }
-                                                alt={stay?.name}
-                                                width='100%'
-                                                height='auto'
+                                            <CardHeader
+                                                title={stay?.name}
+                                                subheader={stay?.id}
                                             />
-                                        </Box>
-                                    </CardContent>
-                                    <Divider />
-                                    <CardActions>
-                                        <Stack
-                                            justifyContent='center'
-                                            direction='column'
-                                            alignItems='center'
-                                            width='100%'
-                                        >
-                                            <Button
-                                                fullWidth
-                                                variant='text'
-                                                color='primary'
-                                                component='label'
+
+                                            <CardContent>
+                                                <Grid container spacing={3}>
+                                                    <Grid item xs={12} md={6}>
+                                                        <Stack>
+                                                            <Typography variant='h6'>
+                                                                Mã nơi lưu trú
+                                                            </Typography>
+                                                            <Typography>
+                                                                {stay?.id}
+                                                            </Typography>
+                                                        </Stack>
+                                                    </Grid>
+                                                    <Grid item xs={12} md={6}>
+                                                        <Controller
+                                                            name='name'
+                                                            control={
+                                                                editProductForm.control
+                                                            }
+                                                            defaultValue={
+                                                                stay?.name
+                                                            }
+                                                            render={({
+                                                                field
+                                                            }) => (
+                                                                <TextField
+                                                                    label='Tên nơi lưu trú'
+                                                                    required
+                                                                    fullWidth
+                                                                    {...field}
+                                                                />
+                                                            )}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                        <Controller
+                                                            name='description'
+                                                            control={
+                                                                editProductForm.control
+                                                            }
+                                                            render={({
+                                                                field
+                                                            }) => (
+                                                                <TextField
+                                                                    label='Mô tả'
+                                                                    fullWidth
+                                                                    multiline
+                                                                    rows={4}
+                                                                    {...field}
+                                                                />
+                                                            )}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12} md={6}>
+                                                        <InputLabel id='demo-select-small-label'>
+                                                            Loại khách sạn
+                                                        </InputLabel>
+                                                        <Select
+                                                            labelId='demo-select-small-label'
+                                                            fullWidth
+                                                            value={selectType}
+                                                            onChange={(e) =>
+                                                                setSelectType(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                        >
+                                                            {stayType.map(
+                                                                (type) => (
+                                                                    <MenuItem
+                                                                        key={
+                                                                            type.value
+                                                                        }
+                                                                        value={
+                                                                            type.value
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            type.label
+                                                                        }
+                                                                    </MenuItem>
+                                                                )
+                                                            )}
+                                                        </Select>
+                                                    </Grid>
+                                                    <Grid item xs={12} md={6}>
+                                                        <InputLabel id='demo-select-small-label'>
+                                                            Trạng thái
+                                                        </InputLabel>
+                                                        <Select
+                                                            labelId='demo-select-small-label'
+                                                            fullWidth
+                                                            value={selectStatus}
+                                                            onChange={(e) =>
+                                                                setSelectType(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                        >
+                                                            {stayStatus.map(
+                                                                (type) => (
+                                                                    <MenuItem
+                                                                        key={
+                                                                            type.value
+                                                                        }
+                                                                        value={
+                                                                            type.value
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            type.label
+                                                                        }
+                                                                    </MenuItem>
+                                                                )
+                                                            )}
+                                                        </Select>
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                        <Typography variant='h6'>
+                                                            Địa chỉ
+                                                        </Typography>
+                                                        <Typography>
+                                                            {
+                                                                stay?.location
+                                                                    .address
+                                                            }
+                                                            ,{' '}
+                                                            {
+                                                                stay?.location
+                                                                    .district
+                                                            }
+                                                            ,{' '}
+                                                            {
+                                                                stay?.location
+                                                                    .province
+                                                            }
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                            </CardContent>
+                                            <Divider />
+                                            <CardActions>
+                                                <Stack
+                                                    justifyContent='center'
+                                                    direction='column'
+                                                    alignItems='center'
+                                                    width='100%'
+                                                >
+                                                    <Button
+                                                        variant='contained'
+                                                        fullWidth
+                                                        type='submit'
+                                                    >
+                                                        Lưu lại
+                                                    </Button>
+                                                </Stack>
+                                            </CardActions>
+                                        </Card>
+
+                                        <Card>
+                                            <CardHeader title='Thông tin chủ nhà' />
+
+                                            <CardContent>
+                                                <Grid container spacing={3}>
+                                                    <Grid item xs={12} md={6}>
+                                                        <Stack
+                                                            direction='row'
+                                                            spacing={4}
+                                                        >
+                                                            <Button
+                                                                variant='contained'
+                                                                onClick={() =>
+                                                                    setOpenDialog(
+                                                                        true
+                                                                    )
+                                                                }
+                                                            >
+                                                                Tạo tài khoản
+                                                            </Button>
+                                                        </Stack>
+                                                    </Grid>
+                                                </Grid>
+                                            </CardContent>
+                                        </Card>
+                                    </Stack>
+                                </Grid>
+                                <Grid item xs={12} md={4}>
+                                    <Card>
+                                        <CardHeader title='Ảnh nơi lưu trú' />
+                                        <CardContent>
+                                            <Box
+                                                sx={{
+                                                    alignItems: 'center',
+                                                    display: 'flex',
+                                                    flexDirection: 'column'
+                                                }}
                                             >
-                                                Thay đổi
-                                                <VisuallyHiddenInput
-                                                    key={preview}
-                                                    type='file'
-                                                    accept='image/*'
-                                                    onChange={(e) => {
-                                                        const file =
-                                                            e.target.files?.[0];
-
-                                                        if (!file) return;
-                                                        setNewImage(file);
-                                                        if (preview)
-                                                            URL.revokeObjectURL(
-                                                                preview
-                                                            );
-
-                                                        setPreview(
-                                                            URL.createObjectURL(
-                                                                file
-                                                            )
-                                                        );
-                                                    }}
+                                                <img
+                                                    src={
+                                                        preview ||
+                                                        stay?.image ||
+                                                        '/images/placeholder.png'
+                                                    }
+                                                    alt={stay?.name}
+                                                    width='100%'
+                                                    height='auto'
                                                 />
-                                            </Button>
-                                            {preview && (
+                                            </Box>
+                                        </CardContent>
+                                        <Divider />
+                                        <CardActions>
+                                            <Stack
+                                                justifyContent='center'
+                                                direction='column'
+                                                alignItems='center'
+                                                width='100%'
+                                            >
                                                 <Button
                                                     fullWidth
                                                     variant='text'
-                                                    color='error'
-                                                    onClick={() => {
-                                                        URL.revokeObjectURL(
-                                                            preview
-                                                        );
-                                                        setPreview(null);
-                                                        setNewImage(null);
-                                                    }}
+                                                    color='primary'
+                                                    component='label'
                                                 >
-                                                    Xóa
+                                                    Thay đổi
+                                                    <VisuallyHiddenInput
+                                                        key={preview}
+                                                        type='file'
+                                                        accept='image/*'
+                                                        onChange={(e) => {
+                                                            const file =
+                                                                e.target
+                                                                    .files?.[0];
+
+                                                            if (!file) return;
+                                                            setNewImage(file);
+                                                            if (preview)
+                                                                URL.revokeObjectURL(
+                                                                    preview
+                                                                );
+
+                                                            setPreview(
+                                                                URL.createObjectURL(
+                                                                    file
+                                                                )
+                                                            );
+                                                        }}
+                                                    />
                                                 </Button>
-                                            )}
-                                        </Stack>
-                                    </CardActions>
-                                </Card>
+                                                {preview && (
+                                                    <Button
+                                                        fullWidth
+                                                        variant='text'
+                                                        color='error'
+                                                        onClick={() => {
+                                                            URL.revokeObjectURL(
+                                                                preview
+                                                            );
+                                                            setPreview(null);
+                                                            setNewImage(null);
+                                                        }}
+                                                    >
+                                                        Xóa
+                                                    </Button>
+                                                )}
+                                            </Stack>
+                                        </CardActions>
+                                    </Card>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </form>
-                </Stack>
-            </Container>
+                        </form>
+                    </Stack>
+                </Container>
 
-            {snackbar.message && (
-                <Snackbar
-                    open={snackbar.open}
-                    autoHideDuration={3000}
-                    onClose={snackbar.handleClose}
-                    action={action}
-                >
-                    <Alert
+                {snackbar.message && (
+                    <Snackbar
+                        open={snackbar.open}
+                        autoHideDuration={3000}
                         onClose={snackbar.handleClose}
-                        severity={snackbar.severity}
-                        sx={{
-                            width: '100%'
-                        }}
+                        action={action}
                     >
-                        {snackbar.message}
-                    </Alert>
-                </Snackbar>
-            )}
-
-            <Dialog open={dialog.open} onClose={dialog.handleClose}>
-                <DialogTitle>
-                    <Stack direction='row' alignItems='center' spacing={1}>
-                        <SvgIcon
-                            fontSize='small'
+                        <Alert
+                            onClose={snackbar.handleClose}
+                            severity={snackbar.severity}
                             sx={{
-                                color: 'warning.main'
+                                width: '100%'
                             }}
                         >
-                            <WarningIcon />
-                        </SvgIcon>
-                        <Typography variant='h6'>{dialog.title}</Typography>
-                    </Stack>
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>{dialog.content}</DialogContentText>
-                    <DialogActions>
-                        <Button onClick={dialog.handleClose}>
-                            {dialog.dialogCancel}
-                        </Button>
-                        <Button onClick={dialog.handleDialogAction}>
-                            {dialog.dialogOk}
-                        </Button>
-                    </DialogActions>
-                </DialogContent>
-            </Dialog>
+                            {snackbar.message}
+                        </Alert>
+                    </Snackbar>
+                )}
 
-            <Backdrop
-                sx={{
-                    color: '#fff',
-                    zIndex: (theme) => theme.zIndex.drawer + 1
-                }}
-                open={getStayByIdQuery.isLoading}
-            >
-                <CircularProgress />
-            </Backdrop>
-        </Box>
+                <Dialog open={dialog.open} onClose={dialog.handleClose}>
+                    <DialogTitle>
+                        <Stack direction='row' alignItems='center' spacing={1}>
+                            <SvgIcon
+                                fontSize='small'
+                                sx={{
+                                    color: 'warning.main'
+                                }}
+                            >
+                                <WarningIcon />
+                            </SvgIcon>
+                            <Typography variant='h6'>{dialog.title}</Typography>
+                        </Stack>
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>{dialog.content}</DialogContentText>
+                        <DialogActions>
+                            <Button onClick={dialog.handleClose}>
+                                {dialog.dialogCancel}
+                            </Button>
+                            <Button onClick={dialog.handleDialogAction}>
+                                {dialog.dialogOk}
+                            </Button>
+                        </DialogActions>
+                    </DialogContent>
+                </Dialog>
+
+                <Backdrop
+                    sx={{
+                        color: '#fff',
+                        zIndex: (theme) => theme.zIndex.drawer + 1
+                    }}
+                    open={getStayByIdQuery.isLoading}
+                >
+                    <CircularProgress />
+                </Backdrop>
+            </Box>
+        </>
     );
 };
 

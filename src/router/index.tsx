@@ -7,6 +7,7 @@ import PrivateRoute from './private_route.tsx';
 import LoginPage from '../pages/auth/login.tsx';
 import AddStay from '../pages/stays/add-stay.tsx';
 import RoomPage from '../pages/rooms/index.tsx';
+import AccountPage from '../pages/account/account.tsx';
 
 export const routes: RouteObject[] = [
     {
@@ -53,6 +54,16 @@ export const routes: RouteObject[] = [
                     {
                         path: '',
                         element: <RoomPage />
+                    }
+                ]
+            },
+            {
+                path: 'accounts',
+                element: <PrivateRoute />,
+                children: [
+                    {
+                        path: '',
+                        element: <AccountPage />
                     }
                 ]
             }

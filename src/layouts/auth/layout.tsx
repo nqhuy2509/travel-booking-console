@@ -76,13 +76,13 @@ export const Layout = () => {
                             }}
                             variant='h1'
                         >
-                            Welcome to{' '}
+                            Chào bạn tới{' '}
                             <Box
                                 component='a'
                                 sx={{ color: '#15B79E' }}
                                 target='_blank'
                             >
-                                Agency management
+                                Booking Travel Admin Console
                             </Box>
                         </Typography>
                         <Typography
@@ -90,10 +90,8 @@ export const Layout = () => {
                             sx={{ mb: 3 }}
                             variant='subtitle1'
                         >
-                            A professional kit that comes with ready-to-use MUI
-                            components.
+                            Trang quản lí Booking Travel Admin Console
                         </Typography>
-                        <img alt='' src='/assets/auth-illustration.svg' />
                     </Box>
                 </Grid>
             </Grid>

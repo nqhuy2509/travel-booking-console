@@ -12,13 +12,26 @@ import { Link, useLocation } from 'react-router-dom';
 import { Scrollbar } from '@/components/scrollbar';
 import { Logo } from '@/components/logo';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
-import { items } from './nav_items';
 import SideNavItem from './side_nav_item';
+
+import BarChartIcon from '@mui/icons-material/BarChart';
+import MapsHomeWorkIcon from '@mui/icons-material/MapsHomeWork';
+import SettingsIcon from '@mui/icons-material/Settings';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import PeopleIc from '@mui/icons-material/People';
 
 type Props = {
     open: boolean;
     onClose: () => void;
     role: string;
+};
+
+type NavItemType = {
+    title: string;
+    path: string;
+    icon: React.ReactNode;
+    disabled?: boolean;
+    external?: boolean;
 };
 
 const SideNav = (props: Props) => {
@@ -28,6 +41,75 @@ const SideNav = (props: Props) => {
     const pathname = location.pathname;
 
     const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
+
+    let navItems: NavItemType[] = [
+        {
+            title: 'Tổng quan',
+            path: '/',
+            icon: (
+                <SvgIcon fontSize='small'>
+                    <BarChartIcon />
+                </SvgIcon>
+            )
+        }
+    ];
+
+    if (role === 'hotelier') {
+        navItems = [
+            ...navItems,
+            {
+                title: 'Quản lí phòng',
+                path: '/rooms',
+                icon: (
+                    <SvgIcon fontSize='small'>
+                        <ShoppingBagIcon />
+                    </SvgIcon>
+                )
+            },
+
+            {
+                title: 'Cài đặt',
+                path: '/settings',
+                icon: (
+                    <SvgIcon fontSize='small'>
+                        <SettingsIcon />
+                    </SvgIcon>
+                )
+            }
+        ];
+    } else {
+        navItems = [
+            ...navItems,
+            {
+                title: 'Tài khoản',
+                path: '/accounts',
+                icon: (
+                    <SvgIcon fontSize='small'>
+                        <PeopleIc />
+                    </SvgIcon>
+                )
+            },
+            {
+                title: 'Nơi lưu trú',
+                path: '/stays',
+                icon: (
+                    <SvgIcon fontSize='small'>
+                        <MapsHomeWorkIcon />
+                    </SvgIcon>
+                )
+            },
+
+            {
+                title: 'Cài đặt',
+                path: '/settings',
+                icon: (
+                    <SvgIcon fontSize='small'>
+                        <SettingsIcon />
+                    </SvgIcon>
+                )
+            }
+        ];
+    }
 
     const content = (
         <Scrollbar
@@ -89,7 +171,7 @@ const SideNav = (props: Props) => {
                     spacing={0.5}
                     sx={{ listStyle: 'none', p: 0, m: 0 }}
                 >
-                    {items.map((item) => {
+                    {navItems.map((item) => {
                         const active = item.path === pathname;
 
                         return (

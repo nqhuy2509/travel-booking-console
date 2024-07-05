@@ -6,6 +6,7 @@ import ProductDetail from '../pages/stays/stay-detail.tsx';
 import PrivateRoute from './private_route.tsx';
 import LoginPage from '../pages/auth/login.tsx';
 import AddStay from '../pages/stays/add-stay.tsx';
+import RoomPage from '../pages/rooms/index.tsx';
 
 export const routes: RouteObject[] = [
     {
@@ -42,6 +43,16 @@ export const routes: RouteObject[] = [
                     {
                         path: ':id',
                         element: <ProductDetail />
+                    }
+                ]
+            },
+            {
+                path: 'rooms',
+                element: <PrivateRoute />,
+                children: [
+                    {
+                        path: '',
+                        element: <RoomPage />
                     }
                 ]
             }

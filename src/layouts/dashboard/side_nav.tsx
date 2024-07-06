@@ -172,7 +172,9 @@ const SideNav = (props: Props) => {
                     sx={{ listStyle: 'none', p: 0, m: 0 }}
                 >
                     {navItems.map((item) => {
-                        const active = item.path === pathname;
+                        const active =
+                            (item.path === '/' && pathname === '/') ||
+                            (pathname.includes(item.path) && item.path !== '/');
 
                         return (
                             <SideNavItem
